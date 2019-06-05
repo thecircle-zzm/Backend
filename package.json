@@ -1,0 +1,23 @@
+{
+  "name": "thecircle-backend",
+  "version": "1.0.0",
+  "description": "## Enviroment Variables - `MONGO` (config: `mongodb://localhost/mango`) - `PORT` (config: `8080`)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thecircle-zzm/Backend.git"
+  },
+  "author": "Marco van Poortvliet, Rudwan Akhiat, Teun Aarts",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thecircle-zzm/Backend/issues"
+  },
+  "homepage": "https://github.com/thecircle-zzm/Backend#readme",
+  "dependencies": {
+    "node-media-server": "^2.1.0"
+  }
+}
