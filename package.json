@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/thecircle-zzm/Backend#readme",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.17",
     "node-media-server": "^2.1.0"
   }
 }

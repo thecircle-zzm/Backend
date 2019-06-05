@@ -1,4 +1,5 @@
 const NodeMediaServer = require('node-media-server');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
 const config = {
     rtmp: {
@@ -10,7 +11,16 @@ const config = {
     },
     http: {
         port: 8000,
+        mediaroot: './media',
         allow_origin: '*'
+    },
+    trans: {
+        ffmpeg: ffmpegPath,
+        tasks: [{
+            app: 'live',
+            mp4: true,
+            mp4Flags: '[movflags=faststart]',
+        }]
     }
 };
 
