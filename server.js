@@ -51,19 +51,17 @@ nms.on('preConnect', (id, args) => {
 
   
   nms.on('prePublish', (id, StreamPath, args) => {
-    console.log('[NodeEvent on prePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
 
-    let S2 = crypto.createHash('md5').update(StreamPath).digest("hex");
+    let session = nms.getSession(id);
 
-    //StreamPath = S2;
+    console.dir(session)
 
-    //nms.StreamPath = S2;
+    let s2 = session.publishStreamPath;
 
-    console.log('Streampath: ', nms.StreamPath);
+    session.publishStreamPath = '/live/' + crypto.createHash('md5').update(s2).digest("hex");
 
+    //session.publishStreamPath = "/live/nigga";
 
-    // let session = nms.getSession(id);
-    // session.reject();
   });
   
   nms.on('postPublish', (id, StreamPath, args) => {
