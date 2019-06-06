@@ -8,10 +8,9 @@
     <title>Document</title>
 </head>
 
-<body>
+<body style="background-color: red">
 
-    <video autoplay id="videoElement"></video>
-    <video autoplay id="videoElement1"></video>
+    <video controls autoplay width="800" id="videoElement"></video>
 
     <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
 
@@ -20,16 +19,7 @@
             var videoElement = document.getElementById('videoElement');
             var flvPlayer = flvjs.createPlayer({
                 type: 'flv',
-                url: 'http://localhost:8000/live/STREAM2.flv'
-            });
-            flvPlayer.attachMediaElement(videoElement);
-            flvPlayer.load();
-            flvPlayer.play();
-
-            var videoElement = document.getElementById('videoElement1');
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                url: 'http://localhost:8000/live/STREAM1.flv'
+                url: 'http://192.168.178.199:8000/live/STREAM2.flv'
             });
             flvPlayer.attachMediaElement(videoElement);
             flvPlayer.load();
