@@ -1,0 +1,7 @@
+{
+    "port": 8080,
+    "databases": {
+        "mongo": "mongodb://localhost/thecircle",
+        "mongo-test": "mongodb://localhost/thecircle_test"
+    }
+}
