@@ -26,7 +26,7 @@ const config = {
     auth: {
       play: true,
       publish: true,
-      secret: 'nodemedia2017privatekey'
+      secret: '1337privatekey6666'
     }
 };
 
