@@ -60,8 +60,6 @@ nms.on('preConnect', (id, args) => {
 
     session.publishStreamPath = '/live/' + crypto.createHash('md5').update(s2).digest("hex");
 
-    //session.publishStreamPath = "/live/nigga";
-
   });
   
   nms.on('postPublish', (id, StreamPath, args) => {
