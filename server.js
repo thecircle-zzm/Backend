@@ -1,6 +1,11 @@
 // Express
 const express = require('express')
 const app = module.exports = express();
+const cors = require('cors')
+
+// CORS
+app.use(cors());
+app.options('*', cors());
 
 // Configuration
 const config = require('./config/config.json')
