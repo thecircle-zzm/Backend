@@ -42,8 +42,6 @@ function createUser(req, res) {
         .then((luser) => {
             if (luser === null) {
 
-                
-
                 let passData = saltHashPassword(passwordNew)
 
                 let newUser = new lUser({
