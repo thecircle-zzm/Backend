@@ -1,9 +1,6 @@
-let get = (req, res) => {
+exports.stream = (req, res) => {
+    //bananen
     res.status(200).json({
-        "message": "stream route"
-    }).end()
-}
-
-module.exports = {
-    get
+      message: "stream route"
+    })
 }

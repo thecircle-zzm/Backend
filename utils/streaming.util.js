@@ -43,47 +43,6 @@ nms.on('preConnect', (id, args) => {
 
     const loginUser = 'test'
     const loginPassword = 'password'
-
-    lUser.findOne({
-            userName: loginUser
-        })
-        .then((luser) => {
-            if (luser === null) {
-                res.status(403).send({
-                    Error: "User does not exist!"
-                })
-                session.reject()
-            } else {
-
-                var sha512 = function (password, salt) {
-                    var hash = crypto.createHmac('sha512', salt) /** Hashing algorithm sha512 */
-                    hash.update(password)
-                    var value = hash.digest('hex')
-                    return {
-                        salt: salt,
-                        passwordHash: value
-                    }
-                }
-
-                function saltHashPassword(userpassword) {
-                    var salt = luser.passwordSalt
-                    var passwordData = sha512(userpassword, salt)
-                    console.log('UserPassword = ' + userpassword)
-                    console.log('Passwordhash = ' + passwordData.passwordHash)
-                    console.log('nSalt = ' + passwordData.salt)
-
-                    if (passwordData.passwordHash == luser.passwordHash) {
-                        console.log('Passwords match')
-                    } else {
-                        res.status(401).send({
-                            Error: "Login error"
-                        })
-                        session.reject()
-                    }
-                }
-                saltHashPassword(loginPassword)
-            }
-        })
         .catch(next)
 })
 
