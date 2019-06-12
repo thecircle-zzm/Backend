@@ -1,7 +1,30 @@
-const mongoose = require('mongoose')
 const userSM = require('../models/schemas/user.schema.js')
 var crypto = require('crypto')
 const lUser = userSM.userModel
+
+let genRandomString = function (length) {
+    return crypto.randomBytes(Math.ceil(length / 2))
+        .toString('hex') /** convert to hex */
+        .slice(0, length) /** return required num of char */
+}
+
+let sha512 = function (password, salt) {
+    let hash = crypto.createHmac('sha512', salt) /** Hashing algorithm sha512 */
+    hash.update(password)
+    let value = hash.digest('hex')
+    return {
+        salt: salt,
+        passwordHash: value
+    }
+}
+
+function saltHashPassword(userpassword) {
+    let salt = genRandomString(16) /** Salt length 16 or var */
+    let passwordData = sha512(userpassword, salt)
+    return {
+        passwordData
+    }
+}
 
 
 function createUser(req, res) {
@@ -10,8 +33,8 @@ function createUser(req, res) {
     let emailNew = req.body.email || ''
     let passwordNew = req.body.password || ''
     let publicKeyNew = req.body.publicKey || ''
-    let hashNew
-    let saltNew
+   // let hashNew
+    //let saltNew
 
     lUser.findOne({
             username: usernameNew
@@ -19,36 +42,15 @@ function createUser(req, res) {
         .then((luser) => {
             if (luser === null) {
 
-                let genRandomString = function (length) {
-                    return crypto.randomBytes(Math.ceil(length / 2))
-                        .toString('hex') /** convert to hex */
-                        .slice(0, length) /** return required num of char */
-                }
+                
 
-                let sha512 = function (password, salt) {
-                    let hash = crypto.createHmac('sha512', salt) /** Hashing algorithm sha512 */
-                    hash.update(password)
-                    let value = hash.digest('hex')
-                    return {
-                        salt: salt,
-                        passwordHash: value
-                    }
-                }
-
-                function saltHashPassword(userpassword) {
-                    let salt = genRandomString(16) /** Salt length 16 or var */
-                    let passwordData = sha512(userpassword, salt)
-                    hashNew = passwordData.passwordHash
-                    saltNew = passwordData.salt
-                }
-
-                saltHashPassword(passwordNew)
+                let passData = saltHashPassword(passwordNew)
 
                 let newUser = new lUser({
                     username: usernameNew,
                     email: emailNew,
-                    passwordHash: hashNew,
-                    passwordSalt: saltNew,
+                    passwordHash: passData.passwordHash,
+                    passwordSalt: passData.salt,
                     publicKey: publicKeyNew
                 })
 
@@ -64,7 +66,7 @@ function createUser(req, res) {
                 res.status(403).send({
                     Error: "User already exists!"
                 })
-                session.reject()
+                //session.reject()
             }
 
         })
