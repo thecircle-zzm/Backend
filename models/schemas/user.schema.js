@@ -2,13 +2,13 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 var userSchema = new Schema({
-    userName: {
+    username: {
         type: String,
         index: true,
         unique: true // Unique index. If you specify `unique: true`
         // specifying `index: true` is optional if you do `unique: true`
       },
-    eMail: String,
+    email: String,
     passwordHash:   String,
     passwordSalt:   String,
     publicKey:   String
