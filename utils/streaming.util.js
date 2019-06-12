@@ -48,7 +48,7 @@ nms.on('preConnect', (id, args) => {
             userName: loginUser
         })
         .then((err, luser) => {
-            if (luser === null) {
+            if (!luser) {
                 /*
                 res.status(403).send({
                     Error: "User does not exist!"
