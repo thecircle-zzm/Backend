@@ -4,7 +4,6 @@ const Schema = mongoose.Schema
 var userSchema = new Schema({
     username: {
         type: String,
-        index: true,
         unique: true // Unique index. If you specify `unique: true`
         // specifying `index: true` is optional if you do `unique: true`
       },
