@@ -25,5 +25,8 @@
     "mongoose": "^5.4.0",
     "morgan": "^1.9.1",
     "node-media-server": "^2.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
   }
 }
