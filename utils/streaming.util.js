@@ -30,7 +30,7 @@ const config = {
     auth: {
         api: true,
         api_user: 'zzm',
-        api_pass: 'zzm123'
+        api_pass: 'PSRwF6PBbmPrZxZaJQ86uSQfFM'
     }
 }
 
