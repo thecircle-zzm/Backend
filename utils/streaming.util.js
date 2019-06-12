@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const NodeMediaServer = require('node-media-server')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
-var crypto = require('crypto')
+const bcrypt = require('bcrypt-nodejs');
 
 const userSM = require('../models/schemas/user.schema.js')
 const lUser = userSM.userModel
@@ -77,17 +77,18 @@ nms.on('prePublish', (id, StreamPath, args) => {
     lUser.findOne({streamingKey: currentStreamKey}, (err, luser) => {
         if (!err) {
             if (!luser) {
-                session.reject(); //Kick invalid stream key
+                session.reject() //Kick invalid stream key
             } else {
                 // do stuff
             }
         }
     });
 
-    session.publishStreamPath = '/live/' + crypto.createHash('sha256').update(s2).digest("hex")
+
+    session.publishStreamPath = '/live/' + bcrypt.hashSync(s2, bcrypt.genSaltSync(8), null)
 })
 
 const getStreamKeyFromStreamPath = (path) => {
-    let parts = path.split('/');
-    return parts[parts.length - 1];
+    let parts = path.split('/')
+    return parts[parts.length - 1]
 };
