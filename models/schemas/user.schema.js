@@ -7,9 +7,17 @@ var userSchema = new Schema({
         unique: true // Unique index. If you specify `unique: true`
         // specifying `index: true` is optional if you do `unique: true`
       },
-    email: String,
-    passwordHash:   String,
-    passwordSalt:   String,
+    email: String, 
+    passwordHash:   {
+      type: String,
+      required: true // Unique index. If you specify `unique: true`
+      // specifying `index: true` is optional if you do `unique: true`
+    },
+    passwordSalt:   {
+      type: String,
+      required: true // Unique index. If you specify `unique: true`
+      // specifying `index: true` is optional if you do `unique: true`
+    },
     publicKey:   String
 })
 

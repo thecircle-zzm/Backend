@@ -2,7 +2,6 @@ let crypto = require('crypto')
 const mongoose = require('mongoose')
 const userSM = require('../models/schemas/user.schema.js')
 const lUser = userSM.userModel
-let user; 
 
 //ToDo: Fix callback if username does not exist
 module.exports = (req, res, next) => {
@@ -11,15 +10,19 @@ module.exports = (req, res, next) => {
                 username: req.body.username
             })
             .then((luser) => {
-                user = luser
                 if (luser === null) {
                     res.status(403).send({
                         Error: "User does not exist!"
                     })
                     //session.reject()
                 } else {
-                    saltHashPassword(req.body.password)
-                    next()
+                    if (saltHashPassword(req.body.password, luser)){
+                        next()
+                    }else {
+                        res.status(400).send({
+                            Error: "Incorrect credentials!"
+                        })
+                    }
                 }
             }) 
     } catch (error) {
@@ -28,7 +31,7 @@ module.exports = (req, res, next) => {
     }
 }
 
-function saltHashPassword(userpassword) {
+function saltHashPassword(userpassword, user) {
     var salt = user.passwordSalt
     var passwordData = sha512(userpassword, salt)
     console.log('UserPassword = ' + userpassword)
@@ -37,6 +40,9 @@ function saltHashPassword(userpassword) {
 
     if (passwordData.passwordHash == user.passwordHash) {
         console.log('Passwords match')
+        return true
+    }else {
+        return false
     }
 }
 

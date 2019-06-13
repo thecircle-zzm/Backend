@@ -21,8 +21,11 @@ let sha512 = function (password, salt) {
 function saltHashPassword(userpassword) {
     let salt = genRandomString(16) /** Salt length 16 or var */
     let passwordData = sha512(userpassword, salt)
+
+    let pHash = passwordData.passwordHash
+    let pSalt = passwordData.salt
     return {
-        passwordData
+        pHash, pSalt
     }
 }
 
@@ -47,8 +50,8 @@ function createUser(req, res) {
                 let newUser = new lUser({
                     username: usernameNew,
                     email: emailNew,
-                    passwordHash: passData.passwordHash,
-                    passwordSalt: passData.salt,
+                    passwordHash: passData.pHash,
+                    passwordSalt: passData.pSalt,
                     publicKey: publicKeyNew
                 })
 
