@@ -39,6 +39,11 @@ function createUser(req, res) {
    // let hashNew
     //let saltNew
 
+
+    let genKey = crypto.randomBytes(Math.ceil(16 / 2))
+         .toString('hex') /** convert to hex */
+        .slice(0, 16) /** return required num of char */
+
     lUser.findOne({
             username: usernameNew
         })
@@ -52,7 +57,8 @@ function createUser(req, res) {
                     email: emailNew,
                     passwordHash: passData.pHash,
                     passwordSalt: passData.pSalt,
-                    publicKey: publicKeyNew
+                    publicKey: publicKeyNew,
+                    streamingKey: genKey
                 })
 
                 newUser.save(function (err) {

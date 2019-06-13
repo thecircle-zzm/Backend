@@ -17,6 +17,11 @@ module.exports = (req, res, next) => {
                     //session.reject()
                 } else {
                     if (saltHashPassword(req.body.password, luser)){
+
+                        let key = luser.streamingKey;
+
+                        res.status(200).json({ message: key })
+
                         next()
                     }else {
                         res.status(400).send({

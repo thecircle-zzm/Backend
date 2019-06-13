@@ -18,7 +18,12 @@ var userSchema = new Schema({
       required: true // Unique index. If you specify `unique: true`
       // specifying `index: true` is optional if you do `unique: true`
     },
-    publicKey:   String
+    publicKey:   String,
+    streamingKey: {
+      type: String,
+      required: true // Unique index. If you specify `unique: true`
+      // specifying `index: true` is optional if you do `unique: true`
+    }
 })
 
 const userModel = mongoose.model('user', userSchema)
