@@ -41,13 +41,27 @@ nms.on('preConnect', (id, args) => {
     console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`)
     let session = nms.getSession(id)
 
-    const loginUser = 'test'
-    const loginPassword = 'password'
-        .catch(next)
+    
 })
 
 nms.on('prePublish', (id, StreamPath, args) => {
     let session = nms.getSession(id)
     let s2 = session.publishStreamPath
+
+    let currentStreamKey = getStreamKeyFromStreamPath(StreamPath);
+
+    lUser.findOne({streamingKey: currentStreamKey}, (err, luser) => {
+        if (!err) {
+            if (!luser) {
+                session.reject() //Kick invalid stream key
+            } 
+        }
+});
+
     session.publishStreamPath = '/live/' + crypto.createHash('sha256').update(s2).digest("hex")
 })
+
+const getStreamKeyFromStreamPath = (path) => {
+    let parts = path.split('/')
+    return parts[parts.length - 1]
+};
