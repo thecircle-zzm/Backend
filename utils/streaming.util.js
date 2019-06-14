@@ -2,9 +2,8 @@ const NodeMediaServer = require('node-media-server')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 var crypto = require('crypto')
 
-const mongoose = require('mongoose')
-const userSM = require('../models/schemas/user.schema.js')
-const lUser = userSM.userModel
+const User = require('../models/schemas/user.schema.js').userModel
+const Stream = require('../models/schemas/stream.schema').streamModel
 
 const config = {
     rtmp: {
@@ -40,25 +39,49 @@ nms.run()
 nms.on('preConnect', (id, args) => {
     console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`)
     let session = nms.getSession(id)
-
-    
 })
 
 nms.on('prePublish', (id, StreamPath, args) => {
     let session = nms.getSession(id)
     let s2 = session.publishStreamPath
 
-    let currentStreamKey = getStreamKeyFromStreamPath(StreamPath);
+    let currentStreamKey = getStreamKeyFromStreamPath(StreamPath)
 
-    lUser.findOne({streamingKey: currentStreamKey}, (err, luser) => {
+    User.findOne({
+        streamingKey: currentStreamKey
+    }, (err, luser) => {
         if (!err) {
             if (!luser) {
                 session.reject() //Kick invalid stream key
-            } 
+            } else {
+
+                let s = {
+                    sessionid: id,
+                    streamer: {
+                        username: luser.username,
+                        email: luser.email,
+                    },
+                    stream: {
+                        path: session.publishStreamPath,
+                    }
+                }
+
+                let stream = new Stream(s)
+
+                stream.save()
+            }
         }
-});
+    })
 
     session.publishStreamPath = '/live/' + crypto.createHash('sha256').update(s2).digest("hex")
+})
+
+nms.on('donePublish', (id, StreamPath, args) => {
+    console.warn('[NodeEvent on donePublish]', `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`);
+
+    Stream.find({ sessionid: id }).remove().exec()
+
+
 })
 
 const getStreamKeyFromStreamPath = (path) => {
