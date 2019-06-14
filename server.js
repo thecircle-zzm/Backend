@@ -22,7 +22,7 @@ let routes = require('./routes/routes')
 app.use('/api', routes)
 
 // Listen on port
-let server = app.listen(port, '0.0.0.0', function () {
+let server = app.listen(port, function () {
     let port = server.address().port
     console.log("Express: Port " + port)
 })
