@@ -90,9 +90,7 @@ nms.on('prePublish', (id, StreamPath, args) => {
 })
 
 nms.on('donePublish', (id, StreamPath, args) => {
-    Stream.deleteOne({sessionid: id}, function (error, result) {
-    	console.log(result)
-    })
+    Stream.find({ sessionid: id }).remove().exec()
 })
 
 const getStreamKeyFromStreamPath = (path) => {
