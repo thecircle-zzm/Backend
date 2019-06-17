@@ -1,11 +1,14 @@
 const NodeMediaServer = require('node-media-server')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 var crypto = require('crypto')
+var cron = require('node-cron');
 
+const Thumbnail = require('../utils/thumbnail.util')
 const User = require('../models/schemas/user.schema.js').userModel
 const Stream = require('../models/schemas/stream.schema').streamModel
 
 const config = {
+    logType: 1,
     rtmp: {
         port: 1935,
         chunk_size: 60000,
@@ -62,8 +65,8 @@ nms.on('prePublish', (id, StreamPath) => {
             if (!luser) {
                 // Kick the session
                 session.reject()
-            } 
-            
+            }
+
             // Else save the session
             else {
 
@@ -84,8 +87,25 @@ nms.on('prePublish', (id, StreamPath) => {
                 let stream = new Stream(s)
                 stream.save()
 
+                // Save hashed streamkey in the session
+                session.hashedStreamKey = hashedStreamKey
+
                 // Create a thumbnail
-                require('../utils/thumbnail.util').generateScreenshot(session.publishStreamPath, hashedStreamKey)
+                Thumbnail.generateScreenshot(session.publishStreamPath, hashedStreamKey)
+
+                // Generate a thumbnail every 60 seconds
+                let task = cron.schedule('* * * * *', () => {
+                    Thumbnail.generateScreenshot(session.publishStreamPath, hashedStreamKey)
+                }, {
+                    scheduled: false
+                })
+
+                // Start the task
+                task.start()
+
+                // Save task in the session so we can stop it later
+                session.task = task
+
             }
         }
 
@@ -93,12 +113,27 @@ nms.on('prePublish', (id, StreamPath) => {
 
     // Set the public streaming path to a hashed value of the streamkey
     session.publishStreamPath = '/live/' + hashedStreamKey
+
+    // Log info
+    console.log("New stream: " + session.publishStreamPath)
+
 })
 
 nms.on('donePublish', (id) => {
-    Stream.deleteOne({sessionid: id}, function (error, result) {
-        console.log(result)
+
+    // Remove Stream from collection
+    Stream.deleteOne({
+        sessionid: id
     })
+
+    // Get session from nms
+    let session = nms.getSession(id)
+
+    // Remove thumbnail
+    Thumbnail.removeScreenshot(session.hashedStreamKey)
+
+    // Stop thumbnail generation cron
+    session.task.stop()
 })
 
 const getStreamKeyFromStreamPath = (path) => {

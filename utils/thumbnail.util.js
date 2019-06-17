@@ -1,8 +1,10 @@
-var ffmpeg = require('fluent-ffmpeg')
+let ffmpeg = require('fluent-ffmpeg')
+let fs = require('fs')
 
 let generateScreenshot = function (path, id) {
     ffmpeg('rtmp://localhost/' + path)
-        .outputOptions(['-f image2',
+        .outputOptions([
+            '-f image2',
             '-vframes 1',
             '-vcodec png',
             '-f rawvideo',
@@ -11,8 +13,17 @@ let generateScreenshot = function (path, id) {
         ])
         .output('media/thumbnails/' + id + '.png')
         .run()
+    console.log('New Screenshot: media/thumbnails/' + id + '.png')
+}
+
+let removeScreenshot = function (id) {
+    let path = 'media/thumbnails/' + id + '.png'
+    fs.unlink(path, (error) => {
+        if (error) console.log(error)
+    })
 }
 
 module.exports = {
-    generateScreenshot
+    generateScreenshot,
+    removeScreenshot
 }

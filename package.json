@@ -25,6 +25,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "mongoose": "^5.4.0",
     "morgan": "^1.9.1",
+    "node-cron": "^2.0.3",
     "node-media-server": "^2.1.0"
   },
   "devDependencies": {
