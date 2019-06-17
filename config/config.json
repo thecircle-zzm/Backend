@@ -1,0 +1,7 @@
+{
+    "port": 8080,
+    "databases": {
+        "mongo": "mongodb://thecircle_backend:imk4wftJywM9rxU3VhNN3sWphXHxhr6V@ds235417.mlab.com:35417/thecircle",
+        "mongo-test": "mongodb://thecircle_backend:imk4wftJywM9rxU3VhNN3sWphXHxhr6V@ds235417.mlab.com:35417/thecircle_test"
+    }
+}

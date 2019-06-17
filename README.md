@@ -1,4 +1,17 @@
-# Circle Backend
+# Mango
+
+## What's in the box?
+- Simple Routing with Express and separate, readable controllers and routing files
+- Request logging with Morgan
+- MongoDb connection and schemas with Mongoose
+- Body Parser
+- Simple startup log script that logs stats from `package.json`
+
+## Installation
+1. Download the project as zip and extract it
+2. Go into the directory with `cd Mango`
+2. Run `npm i` to install all dependencies
+3. Run `npm start` or use `nodemon` to start the server
 
 ## Enviroment Variables
 - `MONGO` (config: `mongodb://localhost/mango`)
