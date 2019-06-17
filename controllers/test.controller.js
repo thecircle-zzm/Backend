@@ -29,16 +29,11 @@ function saltHashPassword(userpassword) {
     }
 }
 
-
 function createUser(req, res) {
-
     let usernameNew = req.body.username 
     let emailNew = req.body.email 
     let passwordNew = req.body.password 
     let publicKeyNew = req.body.publicKey 
-   // let hashNew
-    //let saltNew
-
 
     let genKey = crypto.randomBytes(Math.ceil(16 / 2))
          .toString('hex') /** convert to hex */

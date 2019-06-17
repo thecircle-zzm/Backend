@@ -17,6 +17,9 @@ require('./utils/database.util')
 require('./utils/extension.util')
 require('./utils/streaming.util')
 
+// Serve media folder
+app.use(express.static('media'))
+
 // Routing
 let routes = require('./routes/routes')
 app.use('/api', routes)

@@ -33,19 +33,21 @@ const config = {
     }
 }
 
+// Start Node Media Server
 var nms = new NodeMediaServer(config)
 nms.run()
 
-nms.on('preConnect', (id, args) => {
-    console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`)
-    let session = nms.getSession(id)
-})
+// Empty Stream collection
+emptyCollection()
 
-nms.on('prePublish', (id, StreamPath, args) => {
+nms.on('prePublish', (id, StreamPath) => {
 
     // Get session from nms
     let session = nms.getSession(id)
     let s2 = session.publishStreamPath
+
+    // Hash Streamkey
+    let hashedStreamKey = crypto.createHash('sha256').update(s2).digest("hex")
 
     // Get Streamkey from Stream Path
     let currentStreamKey = getStreamKeyFromStreamPath(StreamPath)
@@ -74,28 +76,42 @@ nms.on('prePublish', (id, StreamPath, args) => {
                     },
                     stream: {
                         path: session.publishStreamPath,
+                        thumbnail: '/thumbnails/' + hashedStreamKey + '.png'
                     }
                 }
 
                 // Save Stream
                 let stream = new Stream(s)
                 stream.save()
+
+                // Create a thumbnail
+                require('../utils/thumbnail.util').generateScreenshot(session.publishStreamPath, hashedStreamKey)
             }
         }
 
     })
 
     // Set the public streaming path to a hashed value of the streamkey
-    session.publishStreamPath = '/live/' + crypto.createHash('sha256').update(s2).digest("hex")
+    session.publishStreamPath = '/live/' + hashedStreamKey
 })
 
-nms.on('donePublish', (id, StreamPath, args) => {
+nms.on('donePublish', (id) => {
     Stream.deleteOne({sessionid: id}, function (error, result) {
-    	console.log(result)
+        console.log(result)
     })
 })
 
 const getStreamKeyFromStreamPath = (path) => {
     let parts = path.split('/')
     return parts[parts.length - 1]
-};
+}
+
+function emptyCollection() {
+    Stream.deleteMany({}, error => {
+        if (error) {
+            console.log(error)
+        } else {
+            console.log("Stream collection has been emptied")
+        }
+    })
+}
