@@ -1,4 +1,5 @@
-let crypto = require('crypto')
+const crypto = require('crypto')
+const NodeRSA = require('node-rsa');
 const mongoose = require('mongoose')
 const userSM = require('../models/schemas/user.schema.js')
 const lUser = userSM.userModel
@@ -21,7 +22,7 @@ module.exports = (req, res, next) => {
 
 
         let signature = req.params.signature;
-        let payload = JSON.stringify(req.body);
+        let payload = convertStringToArrayBufferView(JSON.stringify(req.body));
 
         lUser.findOne({
                 username: req.body.username
@@ -33,23 +34,22 @@ module.exports = (req, res, next) => {
                     })
                     //session.reject()
                 } else {
-                    let pKey = luser.publicKey;
-                   let decrypt_promise = crypto.subtle.verify({name: "RSASSA-PKCS1-v1_5"}, pKey, signature, convertStringToArrayBufferView(payload));
 
-                   decrypt_promise.then(
-                    function(result){
-                        console.log(result);//true or false
 
-                        if (result != true){
-                            res.status(401).json({ message: "Signature error" })
-                        }else {
-                            next()
-                        }
-                    },
-                    function(e){
-                        console.log(e.message);
-                    }
-                );
+
+                    let pKey = new NodeRSA(luser.publicKey);
+
+
+                   let vResult = pKey.verify(payload, signature, 'buffer', 'string')
+
+                   console.log(vResult)
+
+                   if (vResult != true){
+                    res.status(401).json({ message: "Signature error" })
+                   }else {
+                       next()
+                   }
+               
 
 
                 }
