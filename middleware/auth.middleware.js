@@ -3,12 +3,25 @@ const mongoose = require('mongoose')
 const userSM = require('../models/schemas/user.schema.js')
 const lUser = userSM.userModel
 
+
+function convertStringToArrayBufferView(str)
+{
+    var bytes = new Uint8Array(str.length);
+    for (var iii = 0; iii < str.length; iii++)
+    {
+        bytes[iii] = str.charCodeAt(iii);
+    }
+
+    return bytes;
+}
+
 //ToDo: Fix callback if username does not exist
 module.exports = (req, res, next) => {
     try {
 
 
         let signature = req.params.signature;
+        let payload = JSON.stringify(req.body);
 
         lUser.findOne({
                 username: req.body.username
@@ -20,18 +33,25 @@ module.exports = (req, res, next) => {
                     })
                     //session.reject()
                 } else {
-                    if (saltHashPassword(req.body.password, luser)){
+                    let pKey = luser.publicKey;
+                   let decrypt_promise = crypto.subtle.verify({name: "RSASSA-PKCS1-v1_5"}, pKey, signature, convertStringToArrayBufferView(payload));
 
-                        let key = luser.streamingKey;
+                   decrypt_promise.then(
+                    function(result){
+                        console.log(result);//true or false
 
-                        res.status(200).json({ message: key })
-
-                        next()
-                    }else {
-                        res.status(400).send({
-                            Error: "Incorrect credentials!"
-                        })
+                        if (result != true){
+                            res.status(401).json({ message: "Signature error" })
+                        }else {
+                            next()
+                        }
+                    },
+                    function(e){
+                        console.log(e.message);
                     }
+                );
+
+
                 }
             }) 
     } catch (error) {
