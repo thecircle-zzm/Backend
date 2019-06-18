@@ -4,14 +4,8 @@ const addUser = ( id, username, room ) => {
     username = username.trim().toLowerCase()
     room = room.trim().toLowerCase()
 
-    //TODO: Add database lookup function
-    //TODO: Add digital signature check
-
-    if (!username || !room) {
-        return {
-            error: 'Username and room are required!'
-        }
-    }
+    //TODO?: Add database lookup function
+    //TODO?: Add digital signature check
 
     const user = { id, username, room }
     users.push(user)
@@ -35,7 +29,7 @@ const getUsersInRoom = (room) => {
     return users.filter((user) => user.room === room)
 }
 
-//TODO: Add active connections variable with a maximum of 4
+//TODO?: Add active connections variable with a maximum of 4
 
 module.exports = {
     addUser,
