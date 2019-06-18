@@ -16,6 +16,7 @@ require('./utils/startup.util')
 require('./utils/database.util')
 require('./utils/extension.util')
 require('./utils/streaming.util')
+require('./utils/chat.util')
 
 // Routing
 let routes = require('./routes/routes')
