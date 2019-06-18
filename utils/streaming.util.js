@@ -116,7 +116,6 @@ nms.on('prePublish', (id, StreamPath) => {
 
     // Log info
     console.log("New stream: " + session.publishStreamPath)
-
 })
 
 nms.on('donePublish', (id) => {
@@ -134,6 +133,12 @@ nms.on('donePublish', (id) => {
 
     // Stop thumbnail generation cron
     session.task.stop()
+})
+
+nms.on('postPlay', (id, StreamPath, args) => {
+})
+
+nms.on('donePlay', (id, StreamPath, args) => {
 })
 
 const getStreamKeyFromStreamPath = (path) => {
