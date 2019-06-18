@@ -6,6 +6,10 @@ const lUser = userSM.userModel
 //ToDo: Fix callback if username does not exist
 module.exports = (req, res, next) => {
     try {
+
+
+        let signature = req.params.signature;
+
         lUser.findOne({
                 username: req.body.username
             })
