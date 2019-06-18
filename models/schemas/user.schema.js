@@ -7,15 +7,8 @@ var userSchema = new Schema({
     unique: true
   },
   email: String,
-  passwordHash: {
-    type: String,
-    required: true
-  },
-  passwordSalt: {
-    type: String,
-    required: true
-  },
   publicKey: String,
+  tokens: Number,
   streamingKey: {
     type: String,
     required: true
