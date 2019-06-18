@@ -8,7 +8,7 @@ var userSchema = new Schema({
   },
   email: String,
   publicKey: String,
-  tokens: Number,
+  tokens: { type: Number, default: 0 },
   streamingKey: {
     type: String,
     required: true
