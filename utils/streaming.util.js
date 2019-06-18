@@ -123,6 +123,12 @@ nms.on('donePublish', (id) => {
     // Remove Stream from collection
     Stream.deleteOne({
         sessionid: id
+    }, (error, stream) => {
+        if(error) {
+            console.log(error)
+        } else {
+            console.log("Closed stream: " + stream)
+        }
     })
 
     // Get session from nms
