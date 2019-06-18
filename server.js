@@ -5,8 +5,7 @@ const cors = require('cors')
 const auth = require('./middleware/auth.middleware')
 
 // CORS
-app.use(cors());
-app.options('*', cors());
+app.use(cors())
 
 // Configuration
 const config = require('./config/config.json')
