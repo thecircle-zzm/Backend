@@ -76,6 +76,7 @@ nms.on('prePublish', (id, StreamPath) => {
                     streamer: {
                         username: luser.username,
                         email: luser.email,
+                        tokens: luser.tokens
                     },
                     stream: {
                         path: session.publishStreamPath,
@@ -100,11 +101,31 @@ nms.on('prePublish', (id, StreamPath) => {
                     scheduled: false
                 })
 
-                // Start the task
-                task.start()
+                // Award a token every 60 seconds
+                let tokenGeneration = cron.schedule('* * * * *', () => {
+                    User.findOne({
+                        username: s.streamer.username
+                    }, (error, user) => {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            console.log("Awarded 1 token to " + user.username)
+                            let tokens = user.tokens
+                            user.tokens = ++tokens
+                            user.save()
+                        }
+                    })
+                }, {
+                    scheduled: false
+                })
 
-                // Save task in the session so we can stop it later
+                // Start the tasks
+                task.start()
+                tokenGeneration.start()
+
+                // Save tasks in the session so we can stop it later
                 session.task = task
+                session.tokenGeneration = tokenGeneration
 
             }
         }
@@ -124,7 +145,7 @@ nms.on('donePublish', (id) => {
     Stream.deleteOne({
         sessionid: id
     }, (error, stream) => {
-        if(error) {
+        if (error) {
             console.log(error)
         } else {
             console.log("Closed stream: " + stream)
@@ -137,15 +158,14 @@ nms.on('donePublish', (id) => {
     // Remove thumbnail
     Thumbnail.removeScreenshot(session.hashedStreamKey)
 
-    // Stop thumbnail generation cron
+    // Stop Cron jobs
     session.task.stop()
+    sessionStorage.tokenGeneration.stop()
 })
 
-nms.on('postPlay', (id, StreamPath, args) => {
-})
+nms.on('postPlay', (id, StreamPath, args) => {})
 
-nms.on('donePlay', (id, StreamPath, args) => {
-})
+nms.on('donePlay', (id, StreamPath, args) => {})
 
 const getStreamKeyFromStreamPath = (path) => {
     let parts = path.split('/')
