@@ -55,6 +55,9 @@ nms.on('prePublish', (id, StreamPath) => {
     // Get Streamkey from Stream Path
     let currentStreamKey = getStreamKeyFromStreamPath(StreamPath)
 
+    // Set the public streaming path to a hashed value of the streamkey
+    session.publishStreamPath = '/live/' + hashedStreamKey
+
     // Check if the stream key is already in use
     Stream.findOne({
         'stream.key': hashedStreamKey
@@ -143,9 +146,6 @@ nms.on('prePublish', (id, StreamPath) => {
                         // Save tasks in the session so we can stop it later
                         session.task = task
                         session.tokenGeneration = tokenGeneration
-
-                        // Set the public streaming path to a hashed value of the streamkey
-                        session.publishStreamPath = '/live/' + hashedStreamKey
 
                         // Log info
                         console.log(session.user.username + ' started streaming on: ' + session.publishStreamPath)
