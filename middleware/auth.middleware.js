@@ -19,11 +19,11 @@ module.exports = (req, res, next) => {
     try {
 
 
-        let signature = req.params.signature;
+        let signature = req.header('signature')
         let payload = convertStringToArrayBufferView(JSON.stringify(req.body));
 
         lUser.findOne({
-                username: req.params.username
+                username: req.header('username')
             })
             .then((luser) => {
                 if (luser === null) {
@@ -33,10 +33,7 @@ module.exports = (req, res, next) => {
                     //session.reject()
                 } else {
 
-
-
                     let pKey = new NodeRSA(luser.publicKey);
-
 
                     let vResult = pKey.verify(payload, signature, 'buffer', 'string')
 
@@ -49,9 +46,6 @@ module.exports = (req, res, next) => {
                     } else {
                         next()
                     }
-
-
-
                 }
             })
     } catch (error) {
