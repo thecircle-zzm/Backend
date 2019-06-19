@@ -17,6 +17,7 @@ require('./utils/startup.util')
 require('./utils/database.util')
 require('./utils/extension.util')
 require('./utils/streaming.util')
+require('./utils/chat.util')
 
 // Serve media folder
 app.use(express.static('media'))
