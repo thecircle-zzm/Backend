@@ -1,37 +1,65 @@
-let crypto = require('crypto')
+const crypto = require('crypto')
+const NodeRSA = require('node-rsa');
 const mongoose = require('mongoose')
 const userSM = require('../models/schemas/user.schema.js')
 const lUser = userSM.userModel
 
+
+function convertStringToArrayBufferView(str) {
+    var bytes = new Uint8Array(str.length);
+    for (var iii = 0; iii < str.length; iii++) {
+        bytes[iii] = str.charCodeAt(iii);
+    }
+
+    return bytes;
+}
+
 //ToDo: Fix callback if username does not exist
 module.exports = (req, res, next) => {
     try {
+
+
+        let signature = req.header('signature')
+        let payload = convertStringToArrayBufferView(JSON.stringify(req.body))
+
         lUser.findOne({
-                username: req.body.username
+                username: req.header('username')
             })
             .then((luser) => {
+
+                // If user is not found
                 if (luser === null) {
                     res.status(403).send({
                         Error: "User does not exist!"
                     })
-                    //session.reject()
-                } else {
-                    if (saltHashPassword(req.body.password, luser)){
+                } 
+                
+                // If user is found
+                else {
 
-                        let key = luser.streamingKey;
+                    // Logging
+                    console.dir(luser.publicKey)
+                    console.dir(req.header('signature'))
 
-                        res.status(200).json({ message: key })
+                    let pKey = new NodeRSA(luser.publicKey, "pkcs8")
 
-                        next()
-                    }else {
-                        res.status(400).send({
-                            Error: "Incorrect credentials!"
-                        })
-                    }
+                    console.log(pKey)
+
+                    // let vResult = pKey.verify(payload, signature, 'buffer', 'string')
+
+                    // if (vResult != true) {
+                    //     res.status(401).json({
+                    //         message: "Signature error"
+                    //     })
+                    // } else {
+                    //     next()
+                    // }
                 }
-            }) 
+            })
     } catch (error) {
-        res.status(401).json({ message: "Login error" })
+        res.status(401).json({
+            message: "Login error"
+        })
         //session.reject()
     }
 }
@@ -46,7 +74,7 @@ function saltHashPassword(userpassword, user) {
     if (passwordData.passwordHash == user.passwordHash) {
         console.log('Passwords match')
         return true
-    }else {
+    } else {
         return false
     }
 }
@@ -60,4 +88,3 @@ var sha512 = function (password, salt) {
         passwordHash: value
     }
 }
-

@@ -26,7 +26,10 @@
     "mongoose": "^5.4.0",
     "morgan": "^1.9.1",
     "node-media-server": "^2.1.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "node-cron": "^2.0.3",
+    "node-rsa": "^1.0.5"
   },
   "devDependencies": {
     "eslint": "^5.16.0"
