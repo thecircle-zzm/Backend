@@ -55,88 +55,104 @@ nms.on('prePublish', (id, StreamPath) => {
     // Get Streamkey from Stream Path
     let currentStreamKey = getStreamKeyFromStreamPath(StreamPath)
 
-    User.findOne({
-        streamingKey: currentStreamKey
-    }, (err, luser) => {
+    // Check if the stream key is already in use
+    Stream.findOne({
+        'stream.key': hashedStreamKey
+    }, (error, stream) => {
 
-        if (!err) {
+        // If streamkey is already in use, reject the session
+        if (stream) {
+            session.reject()
+        }
 
-            // If user does not exists or invalid streamkey
-            if (!luser) {
-                // Kick the session
-                session.reject()
-            }
+        // Start the session
+        else {
 
-            // Else save the session
-            else {
+            // Check if a user exists with the specified streamkey
+            User.findOne({
+                streamingKey: currentStreamKey
+            }, (err, luser) => {
 
-                // Create object
-                let s = {
-                    sessionid: id,
-                    streamer: {
-                        username: luser.username,
-                        email: luser.email,
-                        tokens: luser.tokens
-                    },
-                    stream: {
-                        path: session.publishStreamPath,
-                        thumbnail: '/thumbnails/' + hashedStreamKey + '.png'
+                if (!err) {
+
+                    // If user does not exists or invalid streamkey, kick the session
+                    if (!luser) {
+                        session.reject()
+                    }
+
+                    // Else save the session
+                    else {
+
+                        // Create object
+                        let s = {
+                            sessionid: id,
+                            streamer: {
+                                username: luser.username,
+                                email: luser.email,
+                                tokens: luser.tokens
+                            },
+                            stream: {
+                                key: hashedStreamKey,
+                                path: session.publishStreamPath,
+                                thumbnail: '/thumbnails/' + hashedStreamKey + '.png'
+                            }
+                        }
+
+                        // Keep track of the user
+                        session.user = luser
+
+                        // Save Stream
+                        let stream = new Stream(s)
+                        stream.save()
+
+                        // Save hashed streamkey in the session
+                        session.hashedStreamKey = hashedStreamKey
+
+                        // Create a thumbnail
+                        Thumbnail.generateScreenshot(session.publishStreamPath, hashedStreamKey)
+
+                        // Generate a thumbnail every 60 seconds
+                        let task = cron.schedule('* * * * *', () => {
+                            Thumbnail.generateScreenshot(session.publishStreamPath, hashedStreamKey)
+                        }, {
+                            scheduled: false
+                        })
+
+                        // Award a token every 60 seconds
+                        let tokenGeneration = cron.schedule('* * * * *', () => {
+                            User.findOne({
+                                username: s.streamer.username
+                            }, (error, user) => {
+                                if (error) {
+                                    console.log(error)
+                                } else {
+                                    console.log("Awarded 1 token to " + user.username)
+                                    let tokens = user.tokens
+                                    user.tokens = ++tokens
+                                    user.save()
+                                }
+                            })
+                        }, {
+                            scheduled: false
+                        })
+
+                        // Start the tasks
+                        task.start()
+                        tokenGeneration.start()
+
+                        // Save tasks in the session so we can stop it later
+                        session.task = task
+                        session.tokenGeneration = tokenGeneration
+
+                        // Set the public streaming path to a hashed value of the streamkey
+                        session.publishStreamPath = '/live/' + hashedStreamKey
+
+                        // Log info
+                        console.log(session.user.username + ' started streaming on: ' + session.publishStreamPath)
+
                     }
                 }
-
-                // Keep track of the user
-                session.user = luser
-
-                // Save Stream
-                let stream = new Stream(s)
-                stream.save()
-
-                // Save hashed streamkey in the session
-                session.hashedStreamKey = hashedStreamKey
-
-                // Create a thumbnail
-                Thumbnail.generateScreenshot(session.publishStreamPath, hashedStreamKey)
-
-                // Generate a thumbnail every 60 seconds
-                let task = cron.schedule('* * * * *', () => {
-                    Thumbnail.generateScreenshot(session.publishStreamPath, hashedStreamKey)
-                }, {
-                    scheduled: false
-                })
-
-                // Award a token every 60 seconds
-                let tokenGeneration = cron.schedule('* * * * *', () => {
-                    User.findOne({
-                        username: s.streamer.username
-                    }, (error, user) => {
-                        if (error) {
-                            console.log(error)
-                        } else {
-                            console.log("Awarded 1 token to " + user.username)
-                            let tokens = user.tokens
-                            user.tokens = ++tokens
-                            user.save()
-                        }
-                    })
-                }, {
-                    scheduled: false
-                })
-
-                // Start the tasks
-                task.start()
-                tokenGeneration.start()
-
-                // Save tasks in the session so we can stop it later
-                session.task = task
-                session.tokenGeneration = tokenGeneration
-
-                // Set the public streaming path to a hashed value of the streamkey
-                session.publishStreamPath = '/live/' + hashedStreamKey
-
-                // Log info
-                console.log(session.user.username + ' started streaming on: ' + session.publishStreamPath)
-
-            }
+            })
         }
     })
 })
