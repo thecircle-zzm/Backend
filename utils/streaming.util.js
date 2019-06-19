@@ -84,6 +84,9 @@ nms.on('prePublish', (id, StreamPath) => {
                     }
                 }
 
+                // Keep track of the user
+                session.user = luser
+
                 // Save Stream
                 let stream = new Stream(s)
                 stream.save()
@@ -127,16 +130,15 @@ nms.on('prePublish', (id, StreamPath) => {
                 session.task = task
                 session.tokenGeneration = tokenGeneration
 
+                // Set the public streaming path to a hashed value of the streamkey
+                session.publishStreamPath = '/live/' + hashedStreamKey
+
+                // Log info
+                console.log(session.user.username + ' started streaming on: ' + session.publishStreamPath)
+
             }
         }
-
     })
-
-    // Set the public streaming path to a hashed value of the streamkey
-    session.publishStreamPath = '/live/' + hashedStreamKey
-
-    // Log info
-    console.log("New stream: " + session.publishStreamPath)
 })
 
 nms.on('donePublish', (id) => {
