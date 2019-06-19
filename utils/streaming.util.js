@@ -166,19 +166,19 @@ nms.on('donePublish', (id) => {
         if (error) {
             console.log(error)
         } else {
-            console.log("Closed stream: " + stream)
+            console.dir("Closed stream: " + stream)
+
+            // Get session from nms
+            let session = nms.getSession(id)
+
+            // Remove thumbnail
+            Thumbnail.removeScreenshot(session.hashedStreamKey)
+
+            // Stop Cron jobs
+            session.task.stop()
+            session.tokenGeneration.stop()
         }
     })
-
-    // Get session from nms
-    let session = nms.getSession(id)
-
-    // Remove thumbnail
-    Thumbnail.removeScreenshot(session.hashedStreamKey)
-
-    // Stop Cron jobs
-    session.task.stop()
-    session.tokenGeneration.stop()
 })
 
 nms.on('postPlay', (id, StreamPath, args) => {})
