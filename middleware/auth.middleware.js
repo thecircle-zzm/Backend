@@ -41,11 +41,8 @@ module.exports = (req, res, next) => {
                     console.dir(luser.publicKey)
                     console.dir(req.header('signature'))
 
-                    let pKey = new NodeRSA(luser.publicKey, "pkcs8-public")
-
+                    let pKey = new NodeRSA(luser.publicKey, "pkcs8")
                     let vResult = pKey.verify(payload, signature, 'buffer', 'string')
-
-                    console.log(vResult)
 
                     if (vResult != true) {
                         res.status(401).json({
