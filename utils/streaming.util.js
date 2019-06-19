@@ -50,7 +50,7 @@ nms.on('prePublish', (id, StreamPath) => {
     let s2 = session.publishStreamPath
 
     // Hash Streamkey
-    let hashedStreamKey = crypto.createHash('sha256').update(s2).digest("hex")
+    let hashedStreamKey = crypto.createHash('sha256').update(s2).digest('hex')
 
     // Get Streamkey from Stream Path
     let currentStreamKey = getStreamKeyFromStreamPath(StreamPath)
@@ -129,7 +129,7 @@ nms.on('prePublish', (id, StreamPath) => {
                                 if (error) {
                                     console.log(error)
                                 } else {
-                                    console.log("Awarded 1 token to " + user.username)
+                                    console.log('Awarded 1 token to ' + user.username)
                                     let tokens = user.tokens
                                     user.tokens = ++tokens
                                     user.save()
@@ -148,7 +148,7 @@ nms.on('prePublish', (id, StreamPath) => {
                         session.tokenGeneration = tokenGeneration
 
                         // Log info
-                        console.log(session.user.username + ' started streaming on: ' + session.publishStreamPath)
+                        console.log('[STREAM] ' + session.user.username + ' started streaming on: ' + session.publishStreamPath)
 
                     }
                 }
@@ -166,7 +166,8 @@ nms.on('donePublish', (id) => {
         if (error) {
             console.log(error)
         } else {
-            console.log("Closed stream: " + stream)
+            // Log info
+            console.log('[STREAM] ' + stream.streamer.username + ' has stoped streaming')
         }
     })
 
@@ -195,7 +196,7 @@ function emptyCollection() {
         if (error) {
             console.log(error)
         } else {
-            console.log("Stream collection has been emptied")
+            console.log('Stream collection has been emptied')
         }
     })
 }

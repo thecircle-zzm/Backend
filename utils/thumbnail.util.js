@@ -3,7 +3,6 @@ let fs = require('fs')
 
 let generateScreenshot = function (path, id) {
     if (path !== '') {
-        console.log('SCREENSHOT PATH: ' + path)
         ffmpeg('rtmp://localhost/' + path)
             .outputOptions([
                 '-f image2',
@@ -15,7 +14,7 @@ let generateScreenshot = function (path, id) {
             ])
             .output('media/thumbnails/' + id + '.png')
             .run()
-        console.log('New Screenshot: media/thumbnails/' + id + '.png')
+        console.log('[SCREENSHOT] media/thumbnails/' + id + '.png')
     }
 }
 
