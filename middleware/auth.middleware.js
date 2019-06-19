@@ -20,20 +20,24 @@ module.exports = (req, res, next) => {
 
 
         let signature = req.header('signature')
-        let payload = convertStringToArrayBufferView(JSON.stringify(req.body));
+        let payload = convertStringToArrayBufferView(JSON.stringify(req.body))
 
         lUser.findOne({
                 username: req.header('username')
             })
             .then((luser) => {
+
+                // If user is not found
                 if (luser === null) {
                     res.status(403).send({
                         Error: "User does not exist!"
                     })
-                    //session.reject()
-                } else {
+                } 
+                
+                // If user is found
+                else {
 
-                    let pKey = new NodeRSA(luser.publicKey);
+                    let pKey = new NodeRSA(luser.publicKey, "pkcs1");
 
                     let vResult = pKey.verify(payload, signature, 'buffer', 'string')
 
