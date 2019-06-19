@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
         let payload = convertStringToArrayBufferView(JSON.stringify(req.body));
 
         lUser.findOne({
-                username: req.body.username
+                username: req.params.username
             })
             .then((luser) => {
                 if (luser === null) {
