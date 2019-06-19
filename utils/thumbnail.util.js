@@ -2,6 +2,7 @@ let ffmpeg = require('fluent-ffmpeg')
 let fs = require('fs')
 
 let generateScreenshot = function (path, id) {
+    console.log('SCREENSHOT PATH: ' + path)
     ffmpeg('rtmp://localhost/' + path)
         .outputOptions([
             '-f image2',
