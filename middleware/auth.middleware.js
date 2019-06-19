@@ -37,6 +37,10 @@ module.exports = (req, res, next) => {
                 // If user is found
                 else {
 
+                    // Logging
+                    console.dir(luser.publicKey)
+                    console.dir(req.header('signature'))
+
                     let pKey = new NodeRSA(luser.publicKey, "pkcs8")
 
                     let vResult = pKey.verify(payload, signature, 'buffer', 'string')
