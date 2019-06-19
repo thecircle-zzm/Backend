@@ -1,11 +1,17 @@
+const fs = require('fs')
 const users = []
 
 const addUser = ( id, username, room ) => {
-    username = username.trim().toLowerCase()
-    room = room.trim().toLowerCase()
-
-    //TODO?: Add database lookup function
     //TODO?: Add digital signature check
+    const existingUser = users.find((user) => {
+        return user.room === room && user.username === username
+    })
+
+    if (existingUser) {
+        return {
+            error: 'User already in room!'
+        }
+    }
 
     const user = { id, username, room }
     users.push(user)
@@ -25,15 +31,28 @@ const getUser = (id) => {
 }
 
 const getUsersInRoom = (room) => {
-    room = room.trim().toLowerCase()
     return users.filter((user) => user.room === room)
 }
 
-//TODO?: Add active connections variable with a maximum of 4
+const createFile = (id) => {
+    fs.appendFile('./media/chat/' + id + '.txt', 'Begin of Chat from: ' + id + "'s stream." + " Chat started on: " + new Date().toISOString() +'\n', (err) => {
+        if(err) throw err
+        console.log('Chat file created.')
+    })
+
+    return(id + '.txt')
+}
+
+const findStreamer = () => {
+    return(users[0].username)
+    
+}
 
 module.exports = {
     addUser,
     removeUser,
     getUser,
-    getUsersInRoom
+    getUsersInRoom,
+    createFile,
+    findStreamer
 }
