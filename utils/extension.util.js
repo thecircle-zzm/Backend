@@ -13,4 +13,4 @@ app.use(bodyParser.urlencoded({
 }))
 
 // Log Requests with Morgan
-app.use(morgan('[API] ' + ':method :url :status :response-time ms - :res[content-length]'))
+app.use(morgan('[API] - ' + ':method :url :status :response-time ms - :res[content-length]'))

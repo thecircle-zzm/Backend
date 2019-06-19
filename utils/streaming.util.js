@@ -129,7 +129,7 @@ nms.on('prePublish', (id, StreamPath) => {
                                 if (error) {
                                     console.log(error)
                                 } else {
-                                    console.log('Awarded 1 token to ' + user.username)
+                                    console.log('[TOKEN] - A token was rewarded to ' + user.username)
                                     let tokens = user.tokens
                                     user.tokens = ++tokens
                                     user.save()
@@ -148,7 +148,7 @@ nms.on('prePublish', (id, StreamPath) => {
                         session.tokenGeneration = tokenGeneration
 
                         // Log info
-                        console.log('[STREAM] ' + session.user.username + ' started streaming on: ' + session.publishStreamPath)
+                        console.log('[STREAM] - ' + session.user.username + ' started streaming on: ' + session.publishStreamPath)
 
                     }
                 }
@@ -167,7 +167,7 @@ nms.on('donePublish', (id) => {
             console.log(error)
         } else {
             // Log info
-            console.log('[STREAM] ' + stream.streamer.username + ' has stoped streaming')
+            console.log('[STREAM] - ' + stream.streamer.username + ' has stoped streaming')
         }
     })
 

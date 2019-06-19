@@ -14,7 +14,7 @@ let generateScreenshot = function (path, id) {
             ])
             .output('media/thumbnails/' + id + '.png')
             .run()
-        console.log('[SCREENSHOT] media/thumbnails/' + id + '.png')
+        console.log('[SCREENSHOT] - media/thumbnails/' + id + '.png')
     }
 }
 
