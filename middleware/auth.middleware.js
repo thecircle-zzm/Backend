@@ -19,39 +19,41 @@ module.exports = (req, res, next) => {
     try {
 
 
-        let signature = req.params.signature;
-        let payload = convertStringToArrayBufferView(JSON.stringify(req.body));
+        let signature = req.header('signature')
+        let payload = convertStringToArrayBufferView(JSON.stringify(req.body))
 
         lUser.findOne({
-                username: req.params.username
+                username: req.header('username')
             })
             .then((luser) => {
+
+                // If user is not found
                 if (luser === null) {
                     res.status(403).send({
                         Error: "User does not exist!"
                     })
-                    //session.reject()
-                } else {
+                } 
+                
+                // If user is found
+                else {
 
+                    // Logging
+                    console.dir(luser.publicKey)
+                    console.dir(req.header('signature'))
 
+                    let pKey = new NodeRSA(luser.publicKey, "pkcs8")
 
-                    let pKey = new NodeRSA(luser.publicKey);
+                    console.log(pKey)
 
+                    // let vResult = pKey.verify(payload, signature, 'buffer', 'string')
 
-                    let vResult = pKey.verify(payload, signature, 'buffer', 'string')
-
-                    console.log(vResult)
-
-                    if (vResult != true) {
-                        res.status(401).json({
-                            message: "Signature error"
-                        })
-                    } else {
-                        next()
-                    }
-
-
-
+                    // if (vResult != true) {
+                    //     res.status(401).json({
+                    //         message: "Signature error"
+                    //     })
+                    // } else {
+                    //     next()
+                    // }
                 }
             })
     } catch (error) {
