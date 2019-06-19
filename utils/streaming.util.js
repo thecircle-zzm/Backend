@@ -162,7 +162,7 @@ nms.on('donePublish', (id) => {
 
     // Stop Cron jobs
     session.task.stop()
-    sessionStorage.tokenGeneration.stop()
+    session.tokenGeneration.stop()
 })
 
 nms.on('postPlay', (id, StreamPath, args) => {})
