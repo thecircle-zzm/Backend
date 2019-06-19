@@ -116,7 +116,6 @@ nms.on('prePublish', (id, StreamPath) => {
 
     // Log info
     console.log("New stream: " + session.publishStreamPath)
-
 })
 
 nms.on('donePublish', (id) => {
@@ -124,6 +123,12 @@ nms.on('donePublish', (id) => {
     // Remove Stream from collection
     Stream.deleteOne({
         sessionid: id
+    }, (error, stream) => {
+        if(error) {
+            console.log(error)
+        } else {
+            console.log("Closed stream: " + stream)
+        }
     })
 
     // Get session from nms
@@ -134,6 +139,12 @@ nms.on('donePublish', (id) => {
 
     // Stop thumbnail generation cron
     session.task.stop()
+})
+
+nms.on('postPlay', (id, StreamPath, args) => {
+})
+
+nms.on('donePlay', (id, StreamPath, args) => {
 })
 
 const getStreamKeyFromStreamPath = (path) => {

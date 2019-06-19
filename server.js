@@ -2,10 +2,11 @@
 const express = require('express')
 const app = module.exports = express();
 const cors = require('cors')
+const auth = require('./middleware/auth.middleware')
 
 // CORS
-app.use(cors());
-app.options('*', cors());
+app.use(cors())
+app.options('*', cors())
 
 // Configuration
 const config = require('./config/config.json')
@@ -22,7 +23,7 @@ app.use(express.static('media'))
 
 // Routing
 let routes = require('./routes/routes')
-app.use('/api', routes)
+app.use('/api', auth, routes)
 
 // Listen on port
 let server = app.listen(port, function () {

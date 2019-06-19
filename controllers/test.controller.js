@@ -8,31 +8,32 @@ let genRandomString = function (length) {
         .slice(0, length) /** return required num of char */
 }
 
-let sha512 = function (password, salt) {
-    let hash = crypto.createHmac('sha512', salt) /** Hashing algorithm sha512 */
-    hash.update(password)
-    let value = hash.digest('hex')
-    return {
-        salt: salt,
-        passwordHash: value
-    }
-}
 
-function saltHashPassword(userpassword) {
-    let salt = genRandomString(16) /** Salt length 16 or var */
-    let passwordData = sha512(userpassword, salt)
+// let sha512 = function (password, salt) {
+//     let hash = crypto.createHmac('sha512', salt) /** Hashing algorithm sha512 */
+//     hash.update(password)
+//     let value = hash.digest('hex')
+//     return {
+//         salt: salt,
+//         passwordHash: value
+//     }
+// }
 
-    let pHash = passwordData.passwordHash
-    let pSalt = passwordData.salt
-    return {
-        pHash, pSalt
-    }
-}
+// function saltHashPassword(userpassword) {
+//     let salt = genRandomString(16) /** Salt length 16 or var */
+//     let passwordData = sha512(userpassword, salt)
+
+//     let pHash = passwordData.passwordHash
+//     let pSalt = passwordData.salt
+//     return {
+//         pHash, pSalt
+//     }
+// }
+
 
 function createUser(req, res) {
     let usernameNew = req.body.username 
     let emailNew = req.body.email 
-    let passwordNew = req.body.password 
     let publicKeyNew = req.body.publicKey 
 
     let genKey = crypto.randomBytes(Math.ceil(16 / 2))
@@ -45,13 +46,12 @@ function createUser(req, res) {
         .then((luser) => {
             if (luser === null) {
 
-                let passData = saltHashPassword(passwordNew)
+                
 
                 let newUser = new lUser({
                     username: usernameNew,
                     email: emailNew,
-                    passwordHash: passData.pHash,
-                    passwordSalt: passData.pSalt,
+                    tokens : 0,
                     publicKey: publicKeyNew,
                     streamingKey: genKey
                 })
