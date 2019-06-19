@@ -2,10 +2,11 @@
 const express = require('express')
 const app = module.exports = express();
 const cors = require('cors')
+const auth = require('./middleware/auth.middleware')
 
 // CORS
-app.use(cors());
-app.options('*', cors());
+app.use(cors())
+app.options('*', cors())
 
 // Configuration
 const config = require('./config/config.json')
@@ -16,6 +17,10 @@ require('./utils/startup.util')
 require('./utils/database.util')
 require('./utils/extension.util')
 require('./utils/streaming.util')
+require('./utils/chat.util')
+
+// Serve media folder
+app.use(express.static('media'))
 
 // Routing
 let routes = require('./routes/routes')
