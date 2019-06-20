@@ -6,7 +6,7 @@ let log = (tag, message) => {
     if (tag == 'stream') emoji = '🎬'
     if (tag == 'collection') emoji = '💾'
     if (tag == 'api') emoji = '⚙️ '
-
+    if (tag == 'token') emoji = '💰'
 
     console.log(emoji + " [" + tag.toUpperCase() + "] - " + message)
 }
