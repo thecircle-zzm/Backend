@@ -7,7 +7,7 @@ let log = (tag, message) => {
     if (tag == 'collection') emoji = '💾'
     if (tag == 'api') emoji = '⚙️ '
     if (tag == 'token') emoji = '💰'
-    if (tag == 'screenshot') emoji = '🖼️'
+    if (tag == 'screenshot') emoji = '🖼️ '
     if (tag == 'error') emoji = '🛑'
 
     console.log(emoji + " [" + tag.toUpperCase() + "] - " + message)
