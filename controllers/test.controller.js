@@ -46,8 +46,6 @@ function createUser(req, res) {
         .then((luser) => {
             if (luser === null) {
 
-                
-
                 let newUser = new lUser({
                     username: usernameNew,
                     email: emailNew,

@@ -1,5 +1,6 @@
 const fs = require('fs')
 const users = []
+const log = require('./logger.util')
 
 const addUser = ( id, username, room ) => {
     //TODO?: Add digital signature check
@@ -37,7 +38,7 @@ const getUsersInRoom = (room) => {
 const createFile = (id) => {
     fs.appendFile('./media/chat/' + id + '.txt', 'Begin of Chat from: ' + id + "'s stream." + " Chat started on: " + new Date().toISOString() +'\n', (err) => {
         if(err) throw err
-        console.log('Chat file created.')
+        log('chat', 'Chat file created.')
     })
 
     return(id + '.txt')
