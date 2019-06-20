@@ -3,7 +3,7 @@ const users = []
 const log = require('./logger.util')
 
 const viewerCount = (room) => {
-    return getUsersInRoom(room).length()
+    return getUsersInRoom(room).length
 }
 
 const addUser = (id, username, room) => {
