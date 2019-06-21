@@ -26,7 +26,7 @@ let getStreamkeyByUsername = (req, res) => {
                         protocol: "http",
                         domain: "188.166.38.127",
                         port: 5000,
-                        room: crypto.createHash('sha256').update(s2).digest('hex')
+                        room: crypto.createHash('sha256').update(user.streamingKey).digest('hex')
                     }
                 }).end()
             }
