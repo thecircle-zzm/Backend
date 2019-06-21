@@ -24,7 +24,7 @@ app.use(express.static('media'))
 
 // Routing
 let routes = require('./routes/routes')
-app.use('/api', routes)
+app.use('/api', auth, routes)
 
 // Listen on port
 let server = app.listen(port, function () {
