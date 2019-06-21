@@ -7,7 +7,7 @@ const viewerCount = (room) => {
 }
 
 const addUser = (id, username, room) => {
-    //TODO?: Add digital signature check
+
     const existingUser = users.find((user) => {
         return user.room === room && user.username === username
     })
