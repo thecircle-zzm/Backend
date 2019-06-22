@@ -50,8 +50,8 @@ function createUser(req, res) {
                     username: usernameNew,
                     email: emailNew,
                     tokens : 0,
-                    publicKey: publicKeyNew,
-                    streamingKey: genKey
+                    publicKey: publicKeyNew, //rsa x509 public key file, add \n or \r escape characters to define a newline!
+                    streamingKey: genKey  //crypto.randomBytes generated hex key 
                 })
 
                 newUser.save(function (err) {
@@ -66,7 +66,6 @@ function createUser(req, res) {
                 res.status(403).send({
                     Error: "User already exists!"
                 })
-                //session.reject()
             }
 
         })

@@ -10,7 +10,7 @@ app.options('*', cors())
 
 // Configuration
 const config = require('./config/config.json')
-const port = process.env.PORT || config.port;
+const port = config.port;
 
 // Utils
 require('./utils/startup.util')
@@ -25,7 +25,7 @@ app.use(express.static('media'))
 
 // Routing
 let routes = require('./routes/routes')
-app.use('/api', auth, routes)
+app.use('/api', auth, routes) //authentication middleware, remove 'auth' if not implemented on client or android side.
 
 // Listen on port
 let server = app.listen(port, function () {

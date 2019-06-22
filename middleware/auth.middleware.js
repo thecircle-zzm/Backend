@@ -67,6 +67,8 @@ module.exports = (req, res, next) => {
     }
 }
 
+//LEGACY PASSWORD BASED LOGIN METHODS!
+/*
 function saltHashPassword(userpassword, user) {
     var salt = user.passwordSalt
     var passwordData = sha512(userpassword, salt)
@@ -81,9 +83,12 @@ function saltHashPassword(userpassword, user) {
         return false
     }
 }
+*/
+
+/*
 
 var sha512 = function (password, salt) {
-    var hash = crypto.createHmac('sha512', salt) /** Hashing algorithm sha512 */
+    var hash = crypto.createHmac('sha512', salt) // Hashing algorithm sha512 
     hash.update(password)
     var value = hash.digest('hex')
     return {
@@ -91,3 +96,4 @@ var sha512 = function (password, salt) {
         passwordHash: value
     }
 }
+*/
