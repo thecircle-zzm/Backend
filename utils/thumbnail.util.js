@@ -1,5 +1,6 @@
 let ffmpeg = require('fluent-ffmpeg')
 let fs = require('fs')
+const log = require('./logger.util')
 
 let generateScreenshot = function (path, id) {
     if (path !== '') {
@@ -14,14 +15,14 @@ let generateScreenshot = function (path, id) {
             ])
             .output('media/thumbnails/' + id + '.png')
             .run()
-        console.log('[SCREENSHOT] - media/thumbnails/' + id + '.png')
+        log('screenshot', 'media/thumbnails/' + id + '.png')
     }
 }
 
 let removeScreenshot = function (id) {
     let path = 'media/thumbnails/' + id + '.png'
     fs.unlink(path, (error) => {
-        if (error) console.log(error)
+        if (error) log('screenshot', error)
     })
 }
 
