@@ -1,4 +1,5 @@
 const http = require('http')
+const log = require('./logger.util')
 const express = require('express')
 const socketio = require('socket.io')
 const {saveMessage, createMessage} = require('./messages.util')
@@ -11,14 +12,13 @@ const io = socketio(server)
 const port = 5000
 
 server.listen(port, () => {
-    console.log(`Socket IO: ${port}`)
+    log('chat', 'Socket IO: ' + port)
 })
 
 io.on('connection', (socket) => {
-    console.log('New WebSocket connection created.')
+    log('chat', 'New WebSocket connection created.')
     
     socket.on('join', (json) => {
-        //TODO?: Add digital signature check
 
         let body = JSON.parse(json)
         let username = body.username
@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
         const {error, user} = addUser(socket.id, username, room)
 
         if(error) {
-            console.log(error)
+            log('chat', error)
             return (error)
         }
         socket.join(room)
