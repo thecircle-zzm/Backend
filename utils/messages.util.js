@@ -1,12 +1,12 @@
 const fs = require('fs')
+const log = require('./logger.util')
 
 const createMessage = (json) => {
-    //TODO?: Save channel messages
     let body = JSON.parse(json)
     let username = body.username
     let message = body.message
 
-    console.log(username + " said: " + message)
+    log('chat', username + " said: " + message)
     return body
 }
 

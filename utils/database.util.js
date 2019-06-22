@@ -1,5 +1,6 @@
 const config = require('../config/config.json')
 const mongoose = require('mongoose')
+const log = require('./logger.util')
 const connection = process.env.MONGO || config.databases.mongo
 
 // Connect to MongoDB
@@ -13,5 +14,5 @@ mongoose.connection.on('error', console.error.bind(console, 'Could not connect t
 
 // Succesful connection
 mongoose.connection.once('open', function () {
-    console.log('Mongoose: ' + connection)
+    log('collection' ,'Mongoose: ' + connection)
 })
