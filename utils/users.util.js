@@ -54,9 +54,13 @@ const createFile = (id) => {
     return (id + '.txt')
 }
 
-const findStreamer = () => {
-    return (users[0].username)
-
+const findStreamer = (room) => {
+    let i
+    for(i = 0; i < users.length; i++) {
+        if(users[i].room === room) {
+            return(users[i].username)
+        }
+    }
 }
 
 module.exports = {

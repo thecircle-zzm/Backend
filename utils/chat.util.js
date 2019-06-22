@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
         }
         socket.join(room)
 
-        if(findStreamer() === username ) {
+        if(findStreamer(room) === username ) {
             createFile(room)
         }
 
