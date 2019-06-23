@@ -1,8 +1,13 @@
 const fs = require('fs')
 const users = []
+const log = require('./logger.util')
 
-const addUser = ( id, username, room ) => {
-    //TODO?: Add digital signature check
+const viewerCount = (room) => {
+    return getUsersInRoom(room).length
+}
+
+const addUser = (id, username, room) => {
+
     const existingUser = users.find((user) => {
         return user.room === room && user.username === username
     })
@@ -13,9 +18,15 @@ const addUser = ( id, username, room ) => {
         }
     }
 
-    const user = { id, username, room }
+    const user = {
+        id,
+        username,
+        room
+    }
     users.push(user)
-    return { user }
+    return {
+        user
+    }
 }
 
 const removeUser = (id) => {
@@ -35,17 +46,21 @@ const getUsersInRoom = (room) => {
 }
 
 const createFile = (id) => {
-    fs.appendFile('./media/chat/' + id + '.txt', 'Begin of Chat from: ' + id + "'s stream." + " Chat started on: " + new Date().toISOString() +'\n', (err) => {
-        if(err) throw err
-        console.log('Chat file created.')
+    fs.appendFile('./media/chat/' + id + '.txt', 'Begin of Chat from: ' + id + "'s stream." + " Chat started on: " + new Date().toISOString() + '\n', (err) => {
+        if (err) throw err
+        log('chat', 'Chat file created.')
     })
 
-    return(id + '.txt')
+    return (id + '.txt')
 }
 
-const findStreamer = () => {
-    return(users[0].username)
-    
+const findStreamer = (room) => {
+    let i
+    for(i = 0; i < users.length; i++) {
+        if(users[i].room === room) {
+            return(users[i].username)
+        }
+    }
 }
 
 module.exports = {
@@ -54,5 +69,6 @@ module.exports = {
     getUser,
     getUsersInRoom,
     createFile,
-    findStreamer
+    findStreamer,
+    viewerCount
 }

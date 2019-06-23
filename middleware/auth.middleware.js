@@ -41,19 +41,22 @@ module.exports = (req, res, next) => {
                     console.dir(luser.publicKey)
                     console.dir(req.header('signature'))
 
-                    let pKey = new NodeRSA(luser.publicKey, "pkcs8")
+
+                    let pKey = new NodeRSA({b: 2048});
+
+                    pKey.importKey(luser.publicKey, 'public')
 
                     console.log(pKey)
 
-                    // let vResult = pKey.verify(payload, signature, 'buffer', 'string')
+                    let vResult = pKey.verify(payload, signature, 'hex', 'hex')
 
-                    // if (vResult != true) {
-                    //     res.status(401).json({
-                    //         message: "Signature error"
-                    //     })
-                    // } else {
-                    //     next()
-                    // }
+                    if (vResult != true) {
+                        res.status(401).json({
+                            message: "Signature error"
+                        })
+                    } else {
+                        next()
+                    }
                 }
             })
     } catch (error) {

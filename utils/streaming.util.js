@@ -1,7 +1,8 @@
 const NodeMediaServer = require('node-media-server')
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
 var crypto = require('crypto')
-var cron = require('node-cron');
+var cron = require('node-cron')
+const log = require('./logger.util')
 
 const Thumbnail = require('../utils/thumbnail.util')
 const User = require('../models/schemas/user.schema.js').userModel
@@ -127,9 +128,9 @@ nms.on('prePublish', (id, StreamPath) => {
                                 username: s.streamer.username
                             }, (error, user) => {
                                 if (error) {
-                                    console.log(error)
+                                    log('stream', error)
                                 } else {
-                                    console.log('[TOKEN] - A token was rewarded to ' + user.username)
+                                    log('token', 'A token was rewarded to ' + user.username)
                                     let tokens = user.tokens
                                     user.tokens = ++tokens
                                     user.save()
@@ -148,7 +149,7 @@ nms.on('prePublish', (id, StreamPath) => {
                         session.tokenGeneration = tokenGeneration
 
                         // Log info
-                        console.log('[STREAM] - ' + session.user.username + ' started streaming on: ' + session.publishStreamPath)
+                        log('stream', session.user.username + ' started streaming on: ' + session.publishStreamPath)
 
                     }
                 }
@@ -164,10 +165,10 @@ nms.on('donePublish', (id) => {
         sessionid: id
     }, (error, stream) => {
         if (error) {
-            console.log(error)
+            log('stream', error)
         } else {
             // Log info
-            console.log('[STREAM] - ' + stream.streamer.username + ' has stoped streaming')
+            log('stream', id + ' has stoped streaming')
         }
     })
 
@@ -182,10 +183,6 @@ nms.on('donePublish', (id) => {
     session.tokenGeneration.stop()
 })
 
-nms.on('postPlay', (id, StreamPath, args) => {})
-
-nms.on('donePlay', (id, StreamPath, args) => {})
-
 const getStreamKeyFromStreamPath = (path) => {
     let parts = path.split('/')
     return parts[parts.length - 1]
@@ -194,9 +191,9 @@ const getStreamKeyFromStreamPath = (path) => {
 function emptyCollection() {
     Stream.deleteMany({}, error => {
         if (error) {
-            console.log(error)
+            log('collection', error)
         } else {
-            console.log('Stream collection has been emptied')
+            log('collection', 'Stream collection has been emptied')
         }
     })
 }
